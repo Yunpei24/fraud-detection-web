@@ -18,6 +18,10 @@ router.get('/recent', async (req, res) => {
         t.amount,
         t.time,
         t.created_at,
+        -- PCA Features (V1-V28) needed for SHAP explanations
+        t.v1, t.v2, t.v3, t.v4, t.v5, t.v6, t.v7, t.v8, t.v9, t.v10,
+        t.v11, t.v12, t.v13, t.v14, t.v15, t.v16, t.v17, t.v18, t.v19, t.v20,
+        t.v21, t.v22, t.v23, t.v24, t.v25, t.v26, t.v27, t.v28,
         p.fraud_score,
         p.is_fraud_predicted,
         p.prediction_time,

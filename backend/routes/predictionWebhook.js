@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
       });
     }
 
-    console.log(`📥 Received ${predictions.length} predictions from pipeline`);
+    console.log(` Received ${predictions.length} predictions from pipeline`);
 
     // Filter fraud alerts (predictions with high fraud probability)
     const fraudAlerts = predictions.filter(p => 
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
     );
 
     if (fraudAlerts.length > 0) {
-      console.log(`🚨 ${fraudAlerts.length} fraud alerts detected`);
+      console.log(` ${fraudAlerts.length} fraud alerts detected`);
       
       // Broadcast to all connected WebSocket clients
       const io = req.app.get('io');

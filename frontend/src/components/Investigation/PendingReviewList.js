@@ -1,8 +1,8 @@
 import React from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Brain } from 'lucide-react';
 import { formatCurrency, formatDateTime, getFraudRiskLevel, getBadgeColor, truncateId } from '../../utils/helpers';
 
-const PendingReviewList = ({ transactions, selectedTransaction, onSelectTransaction }) => {
+const PendingReviewList = ({ transactions, selectedTransaction, onSelectTransaction, onExplainClick }) => {
   if (!transactions || transactions.length === 0) {
     return (
       <div className="card text-center py-12">
@@ -71,6 +71,18 @@ const PendingReviewList = ({ transactions, selectedTransaction, onSelectTransact
                       </span>
                     </div>
                   </div>
+
+                  {/* Explain Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onExplainClick(transaction);
+                    }}
+                    className="mt-3 flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                  >
+                    <Brain size={16} />
+                    <span>View SHAP Explanation</span>
+                  </button>
                 </div>
 
                 {isSelected && (

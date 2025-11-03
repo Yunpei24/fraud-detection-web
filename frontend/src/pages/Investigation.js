@@ -3,11 +3,14 @@ import { AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 import { fraudAPI, transactionAPI } from '../services/api';
 import PendingReviewList from '../components/Investigation/PendingReviewList';
 import FeedbackForm from '../components/Investigation/FeedbackForm';
+import ShapExplanationModal from '../components/Investigation/ShapExplanationModal';
 
 const Investigation = () => {
   const [pendingTransactions, setPendingTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isShapModalOpen, setIsShapModalOpen] = useState(false);
+  const [shapTransaction, setShapTransaction] = useState(null);
 
   const fetchPendingTransactions = async () => {
     setLoading(true);
@@ -47,6 +50,16 @@ const Investigation = () => {
       console.error('Error submitting feedback:', error);
       alert('Failed to submit feedback');
     }
+  };
+
+  const handleExplainClick = (transaction) => {
+    setShapTransaction(transaction);
+    setIsShapModalOpen(true);
+  };
+
+  const handleCloseShapModal = () => {
+    setIsShapModalOpen(false);
+    setShapTransaction(null);
   };
 
   if (loading) {
@@ -110,6 +123,7 @@ const Investigation = () => {
             transactions={pendingTransactions}
             selectedTransaction={selectedTransaction}
             onSelectTransaction={handleSelectTransaction}
+            onExplainClick={handleExplainClick}
           />
         </div>
 
@@ -129,6 +143,13 @@ const Investigation = () => {
           )}
         </div>
       </div>
+
+      {/* SHAP Explanation Modal */}
+      <ShapExplanationModal
+        isOpen={isShapModalOpen}
+        onClose={handleCloseShapModal}
+        transaction={shapTransaction}
+      />
     </div>
   );
 };

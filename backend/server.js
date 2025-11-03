@@ -14,6 +14,8 @@ const fraudRoutes = require('./routes/fraud');
 const transactionRoutes = require('./routes/transactions');
 const driftRoutes = require('./routes/drift');
 const metricsRoutes = require('./routes/metrics');
+const modelsRoutes = require('./routes/models');
+const explainRoutes = require('./routes/explain');
 const predictionWebhookRoutes = require('./routes/predictionWebhook');
 
 const app = express();
@@ -70,6 +72,8 @@ app.use('/api/frauds', fraudRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/drift', driftRoutes);
 app.use('/api/metrics', metricsRoutes);
+app.use('/api/models', modelsRoutes); // Models deployment status
+app.use('/api/explain', explainRoutes); // SHAP explanations and feature importance
 app.use('/api/predictions', predictionWebhookRoutes); // Webhook from realtime_pipeline
 
 // Root endpoint

@@ -134,6 +134,33 @@ export const metricsAPI = {
     api.get(`/api/metrics/top-features`, { params: { limit } }),
 };
 
+// Models API
+export const modelsAPI = {
+  // Get deployment status and production models
+  getStatus: () =>
+    api.get('/api/models/status'),
+};
+
+// Explain API (SHAP explanations and feature importance)
+export const explainAPI = {
+  // Get SHAP explanation for a transaction
+  getShapExplanation: (transactionId, features, modelType = 'ensemble', metadata = {}) =>
+    api.post('/api/explain/shap', {
+      transaction_id: transactionId,
+      features,
+      model_type: modelType,
+      metadata,
+    }),
+  
+  // Get global feature importance for a model
+  getFeatureImportance: (modelType) =>
+    api.get(`/api/explain/feature-importance/${modelType}`),
+  
+  // Get list of available models
+  getAvailableModels: () =>
+    api.get('/api/explain/models'),
+};
+
 // Admin User Management API
 export const adminAPI = {
   // Create a new user

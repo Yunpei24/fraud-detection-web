@@ -3,6 +3,7 @@ import { AlertCircle, TrendingUp, Users, DollarSign, RefreshCw } from 'lucide-re
 import { metricsAPI, fraudAPI } from '../services/api';
 import { subscribeToFraudAlerts, subscribeToNewPredictions } from '../services/websocket';
 import MetricsCards from '../components/Dashboard/MetricsCards';
+import ModelStatusCard from '../components/Dashboard/ModelStatusCard';
 import FraudAlertStream from '../components/Dashboard/FraudAlertStream';
 import RecentActivity from '../components/Dashboard/RecentActivity';
 import FraudTimeline from '../components/Dashboard/FraudTimeline';
@@ -134,6 +135,9 @@ const Dashboard = () => {
 
       {/* Metrics Cards */}
       {metrics && <MetricsCards metrics={metrics} />}
+
+      {/* Model Status Card */}
+      <ModelStatusCard />
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
