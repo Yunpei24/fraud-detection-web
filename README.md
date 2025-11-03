@@ -46,17 +46,17 @@ A modern, responsive web application for real-time fraud detection monitoring an
 │  │   Frontend   │◄────►│   Backend    │◄───►│ PostgreSQL │  │
 │  │  (React +    │      │  (Node.js +  │     │            │  │
 │  │  Tailwind)   │      │   Express)   │     │            │  │
-│  └──────────────┘      └──────────────┘     └────────────┘  │
+│  └──────────────┘      └──────────────┘     └──▲─────────┘  │
 │         │                      │               |    ▲       │
 │         │                      │               |    │       |
 │         ▼                      ▼               |    │       │
 │  ┌──────────────┐      ┌──────────────┐        |    │       │
 │  │  WebSocket   │      │   FastAPI    │ _______│    |       │
 │  │ (Real-time)  │      │ (Prediction) │             │       │
-│  └──────────────┘      └──────────────┘             │       │
-│                                                     │       │
-│                         ┌──────────────┐            │       │
-│                         │   Airflow    │───────────-┘       │
+│  └──────▲───────┘      └──────────────┘             │       │
+│         |                                           │       │
+│         |               ┌──────────────┐            │       │
+│         |_______________│   Airflow    │───────────-┘       │
 │                         │    DAGs      │                    │
 │                         └──────────────┘                    │
 └─────────────────────────────────────────────────────────────┘
@@ -336,7 +336,7 @@ docker exec -it fraud-postgres psql -U fraud_user -d fraud_detection -c "SELECT 
 cat backend/.env | grep FASTAPI_URL
 ```
 
-See [AUTH_SETUP.md](./AUTH_SETUP.md) for complete troubleshooting guide.
+See [AUTH_SETUP.md](./frontend_docs/AUTH_SETUP.md) for complete troubleshooting guide.
 
 ### Database Connection Issues
 ```bash
@@ -359,10 +359,25 @@ psql -U fraud_user -d fraud_detection -h localhost
 # Open browser console to see WebSocket connection status
 ```
 
+## 📚 Documentation
+
+Comprehensive guides for users and developers:
+
+- **[📖 User Guide](./frontend_docs/USER_GUIDE.md)** - Complete end-user documentation
+- **[🏗️ Architecture](./frontend_docs/ARCHITECTURE.md)** - System design and architecture
+- **[🔐 Auth Setup](./frontend_docs/AUTH_SETUP.md)** - JWT authentication configuration
+- **[🚀 Deployment Guide](./frontend_docs/DEPLOYMENT.md)** - Production deployment
+- **[📡 API Reference](./frontend_docs/FASTAPI_ROUTES_REFERENCE.md)** - FastAPI endpoints
+- **[🧠 SHAP Explanation](./frontend_docs/SHAP_EXPLANATION_INTEGRATION.md)** - ML explainability
+- **[👥 Admin Guide](./frontend_docs/ADMIN_USER_MANAGEMENT.md)** - User management
+- **[📊 Models Dashboard](./frontend_docs/MODELS_DASHBOARD_INTEGRATION.md)** - Production models monitoring
+
 ## 📄 License
 
 MIT License
 
-## 👨‍💻 Author
+## 👨‍💻 Authors: Fraud Detection Team
 
-Built for academic fraud detection ML project
+1. Joshua Juste NIKIEMA
+2. Olalekan Taofeek OLALUWOYE
+3. Soulaimana Toihir DJALOUD
