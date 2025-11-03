@@ -23,7 +23,7 @@ router.use(verifyToken);
 router.post('/', async (req, res) => {
   try {
     const response = await axios.post(
-      `${FASTAPI_URL}/api/v1/admin/users`,
+      `${FASTAPI_URL}/admin/users`,
       req.body,
       {
         headers: {
@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
     if (search) params.append('search', search);
 
     const response = await axios.get(
-      `${FASTAPI_URL}/api/v1/admin/users?${params.toString()}`,
+      `${FASTAPI_URL}/admin/users?${params.toString()}`,
       {
         headers: {
           'Authorization': req.token,
@@ -74,7 +74,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const response = await axios.get(
-      `${FASTAPI_URL}/api/v1/admin/users/${req.params.id}`,
+      `${FASTAPI_URL}/admin/users/${req.params.id}`,
       {
         headers: {
           'Authorization': req.token,
@@ -94,7 +94,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const response = await axios.put(
-      `${FASTAPI_URL}/api/v1/admin/users/${req.params.id}`,
+      `${FASTAPI_URL}/admin/users/${req.params.id}`,
       req.body,
       {
         headers: {
@@ -116,7 +116,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const response = await axios.delete(
-      `${FASTAPI_URL}/api/v1/admin/users/${req.params.id}`,
+      `${FASTAPI_URL}/admin/users/${req.params.id}`,
       {
         headers: {
           'Authorization': req.token,
@@ -136,7 +136,7 @@ router.delete('/:id', async (req, res) => {
 router.patch('/:id/activate', async (req, res) => {
   try {
     const response = await axios.patch(
-      `${FASTAPI_URL}/api/v1/admin/users/${req.params.id}/activate`,
+      `${FASTAPI_URL}/admin/users/${req.params.id}/activate`,
       req.body,
       {
         headers: {
@@ -158,7 +158,7 @@ router.patch('/:id/activate', async (req, res) => {
 router.patch('/:id/role', async (req, res) => {
   try {
     const response = await axios.patch(
-      `${FASTAPI_URL}/api/v1/admin/users/${req.params.id}/role`,
+      `${FASTAPI_URL}/admin/users/${req.params.id}/role`,
       req.body,
       {
         headers: {
@@ -180,7 +180,7 @@ router.patch('/:id/role', async (req, res) => {
 router.patch('/:id/password', async (req, res) => {
   try {
     const response = await axios.patch(
-      `${FASTAPI_URL}/api/v1/admin/users/${req.params.id}/password`,
+      `${FASTAPI_URL}/admin/users/${req.params.id}/password`,
       req.body,
       {
         headers: {

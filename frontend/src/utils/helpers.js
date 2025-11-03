@@ -2,55 +2,90 @@
  * Format currency values
  */
 export const formatCurrency = (value) => {
+  // Handle null, undefined, or non-numeric values
+  const numValue = Number(value);
+  if (isNaN(numValue) || value === null || value === undefined) {
+    return '$0.00';
+  }
+  
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(value);
+  }).format(numValue);
 };
 
 /**
  * Format percentage values
  */
 export const formatPercentage = (value, decimals = 2) => {
-  return `${parseFloat(value).toFixed(decimals)}%`;
+  // Handle null, undefined, or non-numeric values
+  const numValue = Number(value);
+  if (isNaN(numValue) || value === null || value === undefined) {
+    return '0.00%';
+  }
+  
+  return `${numValue.toFixed(decimals)}%`;
 };
 
 /**
  * Format date/time
  */
 export const formatDateTime = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
+  if (!dateString) return 'N/A';
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid Date';
+    
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Invalid Date';
+  }
 };
 
 /**
  * Format time only
  */
 export const formatTime = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
+  if (!dateString) return 'N/A';
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid Time';
+    
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  } catch (error) {
+    console.error('Error formatting time:', error);
+    return 'Invalid Time';
+  }
 };
 
 /**
  * Get fraud risk level
  */
 export const getFraudRiskLevel = (score) => {
-  if (score >= 0.8) return 'high';
-  if (score >= 0.5) return 'medium';
-  if (score >= 0.3) return 'low';
+  const numScore = Number(score);
+  if (isNaN(numScore) || score === null || score === undefined) {
+    return 'safe';
+  }
+  
+  if (numScore >= 0.8) return 'high';
+  if (numScore >= 0.5) return 'medium';
+  if (numScore >= 0.3) return 'low';
   return 'safe';
 };
 
@@ -121,25 +156,34 @@ export const debounce = (func, wait) => {
  * Calculate time ago
  */
 export const timeAgo = (dateString) => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const seconds = Math.floor((now - date) / 1000);
+  if (!dateString) return 'N/A';
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid Date';
+    
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
 
-  const intervals = {
-    year: 31536000,
-    month: 2592000,
-    week: 604800,
-    day: 86400,
-    hour: 3600,
-    minute: 60,
-  };
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+    };
 
-  for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-    const interval = Math.floor(seconds / secondsInUnit);
-    if (interval >= 1) {
-      return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+      const interval = Math.floor(seconds / secondsInUnit);
+      if (interval >= 1) {
+        return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
+      }
     }
-  }
 
-  return 'just now';
+    return 'just now';
+  } catch (error) {
+    console.error('Error calculating time ago:', error);
+    return 'N/A';
+  }
 };

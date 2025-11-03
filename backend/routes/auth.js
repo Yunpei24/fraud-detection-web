@@ -16,15 +16,14 @@ const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8000';
  */
 router.post('/login', async (req, res) => {
   try {
-    const { username, password } = Object.fromEntries(
-      new URLSearchParams(req.body)
-    );
+    const { username, password } = req.body;
 
     console.log(`[AUTH] Login attempt for user: ${username}`);
+    console.log(`[AUTH] FastAPI URL: ${FASTAPI_URL}/auth/login`);
 
     // Forward login request to FastAPI
     const response = await axios.post(
-      `${FASTAPI_URL}/api/v1/auth/login`,
+      `${FASTAPI_URL}/auth/login`,
       new URLSearchParams({
         username,
         password,
@@ -73,7 +72,7 @@ router.post('/refresh', async (req, res) => {
 
     // Forward refresh request to FastAPI
     const response = await axios.post(
-      `${FASTAPI_URL}/api/v1/auth/refresh`,
+      `${FASTAPI_URL}/auth/refresh`,
       {},
       {
         headers: {
@@ -116,7 +115,7 @@ router.get('/me', async (req, res) => {
 
     // Forward request to FastAPI
     const response = await axios.get(
-      `${FASTAPI_URL}/api/v1/auth/me`,
+      `${FASTAPI_URL}/auth/me`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -154,7 +153,7 @@ const verifyToken = async (req, res, next) => {
 
     // Verify token with FastAPI
     const response = await axios.get(
-      `${FASTAPI_URL}/api/v1/auth/me`,
+      `${FASTAPI_URL}/auth/me`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
