@@ -1,0 +1,27 @@
+{
+  "name": "fraud-detection-web",
+  "version": "1.0.0",
+  "description": "Fraud Detection Web Application",
+  "main": "backend/server.js",
+  "scripts": {
+    "frontend": "cd frontend && npm start",
+    "backend": "cd backend && node server.js",
+    "backend:dev": "cd backend && nodemon server.js",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend\"",
+    "build:frontend": "cd frontend && npm run build",
+    "start": "cd backend && node server.js"
+  },
+  "keywords": [
+    "fraud-detection",
+    "machine-learning",
+    "react",
+    "express"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.1"
+  }
+}
