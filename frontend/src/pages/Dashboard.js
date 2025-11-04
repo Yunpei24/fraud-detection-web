@@ -4,6 +4,7 @@ import { metricsAPI, fraudAPI } from '../services/api';
 import { subscribeToFraudAlerts, subscribeToNewPredictions } from '../services/websocket';
 import MetricsCards from '../components/Dashboard/MetricsCards';
 import ModelStatusCard from '../components/Dashboard/ModelStatusCard';
+import TrainedModelsList from '../components/Dashboard/TrainedModelsList';
 import FraudAlertStream from '../components/Dashboard/FraudAlertStream';
 import RecentActivity from '../components/Dashboard/RecentActivity';
 import FraudTimeline from '../components/Dashboard/FraudTimeline';
@@ -136,8 +137,14 @@ const Dashboard = () => {
       {/* Metrics Cards */}
       {metrics && <MetricsCards metrics={metrics} />}
 
-      {/* Model Status Card */}
-      <ModelStatusCard />
+      {/* Models Section - 2 cards side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Model Deployment Status */}
+        <ModelStatusCard />
+        
+        {/* Trained Models List */}
+        <TrainedModelsList />
+      </div>
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

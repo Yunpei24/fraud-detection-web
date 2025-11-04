@@ -29,16 +29,16 @@ router.use(verifyToken);
 /**
  * GET /api/models/status
  * Get current deployment status and production models
- * Proxies to FastAPI /api/v1/deployment/deployment-status
+ * Proxies to FastAPI /admin/deployment/deployment-status
  */
 router.get('/status', async (req, res) => {
   try {
     console.log('[MODELS] Fetching deployment status');
-    console.log(`[MODELS] FastAPI URL: ${FASTAPI_URL}/api/v1/deployment/deployment-status`);
+    console.log(`[MODELS] FastAPI URL: ${FASTAPI_URL}/admin/deployment/deployment-status`);
 
     // Forward request to FastAPI
     const response = await axios.get(
-      `${FASTAPI_URL}/api/v1/deployment/deployment-status`,
+      `${FASTAPI_URL}/admin/deployment/deployment-status`,
       {
         headers: {
           Authorization: req.token,

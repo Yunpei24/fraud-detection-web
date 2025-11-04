@@ -155,12 +155,12 @@ const Login = () => {
             <div className="space-y-2 text-xs">
               <div className="bg-white/5 rounded p-3 border border-gray-700">
                 <p className="text-gray-300">
-                  <span className="font-semibold text-blue-400">Admin:</span> admin / admin123
+                  <span className="font-semibold text-blue-400">Admin:</span> username / password
                 </p>
               </div>
               <div className="bg-white/5 rounded p-3 border border-gray-700">
                 <p className="text-gray-300">
-                  <span className="font-semibold text-green-400">Analyst:</span> analyst / analyst123
+                  <span className="font-semibold text-green-400">Analyst:</span> username / password
                 </p>
               </div>
             </div>
