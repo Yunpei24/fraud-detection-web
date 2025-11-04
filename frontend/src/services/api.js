@@ -196,4 +196,31 @@ export const adminAPI = {
     api.patch(`/admin/users/${id}/password`, { new_password: newPassword }),
 };
 
+// Data API - Access to training, transaction, and prediction data
+export const dataAPI = {
+  // Get training data (paginated)
+  getTrainingData: (limit = 100, offset = 0) =>
+    api.get('/api/data/training', { params: { limit, offset } }),
+  
+  // Get all training data (for export)
+  getAllTrainingData: () =>
+    api.get('/api/data/training/all'),
+  
+  // Get transactions (paginated)
+  getTransactions: (limit = 100, offset = 0) =>
+    api.get('/api/data/transactions', { params: { limit, offset } }),
+  
+  // Get all transactions (for export)
+  getAllTransactions: () =>
+    api.get('/api/data/transactions/all'),
+  
+  // Get predictions (paginated)
+  getPredictions: (limit = 100, offset = 0) =>
+    api.get('/api/data/predictions', { params: { limit, offset } }),
+  
+  // Get all predictions (for export)
+  getAllPredictions: () =>
+    api.get('/api/data/predictions/all'),
+};
+
 export default api;

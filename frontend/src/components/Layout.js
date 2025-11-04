@@ -5,6 +5,7 @@ import {
   CreditCard, 
   TrendingUp, 
   AlertTriangle,
+  Database,
   Menu,
   X,
   User,
@@ -29,6 +30,7 @@ const Layout = () => {
     { name: 'Transactions', path: '/transactions', icon: CreditCard },
     { name: 'Drift Monitoring', path: '/drift', icon: TrendingUp },
     { name: 'Investigation', path: '/investigation', icon: AlertTriangle },
+    { name: 'Data Interface', path: '/data', icon: Database },
   ];
 
   // Add Admin link only for admin users

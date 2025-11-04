@@ -9,6 +9,7 @@ import Transactions from './pages/Transactions';
 import DriftMonitoring from './pages/DriftMonitoring';
 import Investigation from './pages/Investigation';
 import UserManagement from './pages/UserManagement';
+import DataInterface from './pages/DataInterface';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="transactions" element={<Transactions />} />
             <Route path="drift" element={<DriftMonitoring />} />
+            <Route path="data" element={<DataInterface />} />
             
             {/* Investigation requires analyst or admin role */}
             <Route 

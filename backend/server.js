@@ -17,6 +17,7 @@ const metricsRoutes = require('./routes/metrics');
 const modelsRoutes = require('./routes/models');
 const explainRoutes = require('./routes/explain');
 const predictionWebhookRoutes = require('./routes/predictionWebhook');
+const dataRoutes = require('./routes/data');
 
 const app = express();
 const server = http.createServer(app);
@@ -75,6 +76,7 @@ app.use('/api/metrics', metricsRoutes);
 app.use('/api/models', modelsRoutes); // Models deployment status
 app.use('/api/explain', explainRoutes); // SHAP explanations and feature importance
 app.use('/api/predictions', predictionWebhookRoutes); // Webhook from realtime_pipeline
+app.use('/api/data', dataRoutes); // Data interface for training, transactions, predictions
 
 // Root endpoint
 app.get('/', (req, res) => {
