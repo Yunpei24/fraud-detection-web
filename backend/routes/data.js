@@ -88,33 +88,20 @@ router.get('/transactions', async (req, res) => {
     const countResult = await pool.query('SELECT COUNT(*) FROM transactions');
     const totalCount = parseInt(countResult.rows[0].count);
 
-    // Get transactions
+    // Get transactions - matching actual schema
     const result = await pool.query(
       `SELECT 
         id,
         transaction_id,
-        customer_id,
-        merchant_id,
-        amount,
-        currency,
         time,
-        customer_zip,
-        merchant_zip,
-        customer_country,
-        merchant_country,
-        device_id,
-        session_id,
-        ip_address,
-        mcc,
-        transaction_type,
-        is_fraud,
-        is_disputed,
         v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,
         v11, v12, v13, v14, v15, v16, v17, v18, v19, v20,
         v21, v22, v23, v24, v25, v26, v27, v28,
-        source_system,
-        ingestion_timestamp,
-        created_at
+        amount,
+        class,
+        source,
+        timestamp,
+        ingestion_timestamp
       FROM transactions 
       ORDER BY time DESC 
       LIMIT $1 OFFSET $2`,
@@ -154,7 +141,7 @@ router.get('/predictions', async (req, res) => {
     const countResult = await pool.query('SELECT COUNT(*) FROM predictions');
     const totalCount = parseInt(countResult.rows[0].count);
 
-    // Get predictions with transaction info
+    // Get predictions with transaction info - matching actual schema
     const result = await pool.query(
       `SELECT 
         p.id,
@@ -170,9 +157,8 @@ router.get('/predictions', async (req, res) => {
         p.alert_sent,
         p.alert_sent_at,
         t.amount,
-        t.customer_id,
-        t.merchant_id,
-        t.is_fraud as actual_fraud
+        t.class as actual_fraud,
+        t.time as transaction_time
       FROM predictions p
       LEFT JOIN transactions t ON p.transaction_id = t.transaction_id
       ORDER BY p.prediction_time DESC 
@@ -241,15 +227,17 @@ router.get('/transactions/all', async (req, res) => {
 
     const result = await pool.query(
       `SELECT 
-        id, transaction_id, customer_id, merchant_id,
-        amount, currency, time,
-        customer_zip, merchant_zip, customer_country, merchant_country,
-        device_id, session_id, ip_address, mcc, transaction_type,
-        is_fraud, is_disputed,
+        id, 
+        transaction_id,
+        time,
         v1, v2, v3, v4, v5, v6, v7, v8, v9, v10,
         v11, v12, v13, v14, v15, v16, v17, v18, v19, v20,
         v21, v22, v23, v24, v25, v26, v27, v28,
-        source_system, ingestion_timestamp, created_at
+        amount,
+        class,
+        source,
+        timestamp,
+        ingestion_timestamp
       FROM transactions 
       ORDER BY time DESC`
     );
@@ -277,11 +265,20 @@ router.get('/predictions/all', async (req, res) => {
 
     const result = await pool.query(
       `SELECT 
-        p.id, p.transaction_id, p.fraud_score, p.is_fraud_predicted,
-        p.model_version, p.model_name, p.confidence,
-        p.prediction_time, p.prediction_latency_ms,
-        p.alert_sent, p.alert_sent_at,
-        t.amount, t.customer_id, t.merchant_id, t.is_fraud as actual_fraud
+        p.id, 
+        p.transaction_id, 
+        p.fraud_score, 
+        p.is_fraud_predicted,
+        p.model_version, 
+        p.model_name, 
+        p.confidence,
+        p.prediction_time, 
+        p.prediction_latency_ms,
+        p.alert_sent, 
+        p.alert_sent_at,
+        t.amount, 
+        t.class as actual_fraud,
+        t.time as transaction_time
       FROM predictions p
       LEFT JOIN transactions t ON p.transaction_id = t.transaction_id
       ORDER BY p.prediction_time DESC`

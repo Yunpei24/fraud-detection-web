@@ -157,20 +157,19 @@ const DataInterface = () => {
         return [
           { key: 'id', label: 'ID' },
           { key: 'transaction_id', label: 'Transaction ID' },
-          { key: 'customer_id', label: 'Customer' },
-          { key: 'merchant_id', label: 'Merchant' },
+          { key: 'time', label: 'Time' },
           { key: 'amount', label: 'Amount', render: (val) => `$${parseFloat(val).toFixed(2)}` },
-          { key: 'currency', label: 'Currency' },
-          { key: 'time', label: 'Time', render: (val) => new Date(val).toLocaleString() },
-          { key: 'is_fraud', label: 'Is Fraud', render: (val) => (
-            val === null ? '-' : (
-              <span className={`badge ${val ? 'badge-danger' : 'badge-success'}`}>
-                {val ? 'Yes' : 'No'}
-              </span>
-            )
+          { key: 'class', label: 'Class', render: (val) => (
+            <span className={`badge ${val === 1 ? 'badge-danger' : 'badge-success'}`}>
+              {val === 1 ? 'Fraud' : 'Legitimate'}
+            </span>
           )},
-          { key: 'customer_country', label: 'Country' },
-          { key: 'mcc', label: 'MCC' }
+          { key: 'v1', label: 'V1', render: (val) => val !== null ? parseFloat(val).toFixed(4) : '-' },
+          { key: 'v2', label: 'V2', render: (val) => val !== null ? parseFloat(val).toFixed(4) : '-' },
+          { key: 'v3', label: 'V3', render: (val) => val !== null ? parseFloat(val).toFixed(4) : '-' },
+          { key: 'source', label: 'Source' },
+          { key: 'timestamp', label: 'Timestamp', render: (val) => val ? new Date(val).toLocaleString() : '-' },
+          { key: 'ingestion_timestamp', label: 'Ingestion', render: (val) => val ? new Date(val).toLocaleString() : '-' }
         ];
 
       case 'predictions':
@@ -188,16 +187,24 @@ const DataInterface = () => {
             </span>
           )},
           { key: 'actual_fraud', label: 'Actual Fraud', render: (val) => (
-            val === null ? '-' : (
-              <span className={`badge ${val ? 'badge-danger' : 'badge-success'}`}>
-                {val ? 'Yes' : 'No'}
+            val === null || val === undefined ? '-' : (
+              <span className={`badge ${val === 1 ? 'badge-danger' : 'badge-success'}`}>
+                {val === 1 ? 'Yes' : 'No'}
               </span>
             )
           )},
           { key: 'model_version', label: 'Model Version' },
+          { key: 'model_name', label: 'Model Name' },
           { key: 'confidence', label: 'Confidence', render: (val) => val ? (val * 100).toFixed(2) + '%' : '-' },
           { key: 'prediction_time', label: 'Prediction Time', render: (val) => new Date(val).toLocaleString() },
-          { key: 'amount', label: 'Amount', render: (val) => val ? `$${parseFloat(val).toFixed(2)}` : '-' }
+          { key: 'prediction_latency_ms', label: 'Latency (ms)' },
+          { key: 'amount', label: 'Amount', render: (val) => val ? `$${parseFloat(val).toFixed(2)}` : '-' },
+          { key: 'transaction_time', label: 'Transaction Time', render: (val) => val || '-' },
+          { key: 'alert_sent', label: 'Alert Sent', render: (val) => (
+            <span className={`badge ${val ? 'badge-info' : 'badge-secondary'}`}>
+              {val ? 'Yes' : 'No'}
+            </span>
+          )}
         ];
 
       default:
