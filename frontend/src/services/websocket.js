@@ -65,9 +65,11 @@ export const disconnectWebSocket = () => {
   }
 };
 
-export default {
+const websocketService = {
   connectWebSocket,
   subscribeToFraudAlerts,
   subscribeToNewPredictions,
   disconnectWebSocket,
 };
+
+export default websocketService;

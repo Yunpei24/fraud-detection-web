@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Database, Table, BarChart3, Download, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Database, Table, BarChart3, RefreshCw } from 'lucide-react';
 import { dataAPI } from '../services/api';
 import DataTable from '../components/Data/DataTable';
 
@@ -16,7 +16,7 @@ const DataInterface = () => {
   });
 
   // Fetch data based on active tab
-  const fetchData = async (tab = activeTab, offset = 0) => {
+  const fetchData = useCallback(async (tab = activeTab, offset = 0) => {
     setLoading(true);
     setError(null);
 
@@ -52,12 +52,12 @@ const DataInterface = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, pagination.limit]);
 
   // Load data when tab changes
   useEffect(() => {
     fetchData(activeTab, 0);
-  }, [activeTab]);
+  }, [activeTab, fetchData]);
 
   // Handle page change
   const handlePageChange = (newOffset) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, TrendingUp, Users, DollarSign, RefreshCw } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 import { metricsAPI, fraudAPI } from '../services/api';
 import { subscribeToFraudAlerts, subscribeToNewPredictions } from '../services/websocket';
 import MetricsCards from '../components/Dashboard/MetricsCards';

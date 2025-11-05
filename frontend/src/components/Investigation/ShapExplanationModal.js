@@ -8,43 +8,6 @@ const ShapExplanationModal = ({ isOpen, onClose, transaction }) => {
   const [error, setError] = useState(null);
   const [selectedModel, setSelectedModel] = useState('ensemble');
 
-  useEffect(() => {
-    if (isOpen && transaction) {
-      fetchShapExplanation();
-    }
-  }, [isOpen, transaction, selectedModel]);
-
-  const fetchShapExplanation = async () => {
-    if (!transaction) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Extract features from transaction as array of 30 floats
-      // Format: [Time, V1, V2, ..., V28, Amount]
-      const features = extractFeatures(transaction);
-
-      if (!features || features.length !== 30) {
-        throw new Error('Transaction must have exactly 30 features');
-      }
-
-      const response = await explainAPI.getShapExplanation(
-        transaction.transaction_id || transaction.id,
-        features,
-        selectedModel,
-        { source: 'investigation_page' }
-      );
-
-      setShapData(response.data);
-    } catch (err) {
-      console.error('Error fetching SHAP explanation:', err);
-      setError(err.response?.data?.detail?.message || err.message || 'Failed to load SHAP explanation');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Helper function to extract 30 features from transaction
   const extractFeatures = (transaction) => {
     // If transaction already has features array, use it
@@ -62,8 +25,7 @@ const ShapExplanationModal = ({ isOpen, onClose, transaction }) => {
     // V1-V28 (indices 1-28)
     for (let i = 1; i <= 28; i++) {
       const key = `v${i}`;
-      const value = transaction[key] || transaction[`V${i}`] || 0;
-      features.push(parseFloat(value));
+      features.push(parseFloat(transaction[key] || 0));
     }
     
     // Amount (index 29)
@@ -71,6 +33,48 @@ const ShapExplanationModal = ({ isOpen, onClose, transaction }) => {
     
     return features;
   };
+
+  // Fetch SHAP explanation
+  const fetchShapExplanation = async () => {
+    if (!transaction) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Extract features from transaction as array of 30 floats
+      // Format: [Time, V1, V2, ..., V28, Amount]
+      const features = extractFeatures(transaction);
+
+      if (!features || features.length !== 30) {
+        throw new Error('Transaction must have exactly 30 features');
+      }
+
+      console.log('Requesting SHAP explanation for transaction:', transaction.transaction_id);
+      console.log('Using model:', selectedModel);
+
+      const response = await explainAPI.getShapExplanation({
+        transaction_id: transaction.transaction_id,
+        features: features,
+        model_type: selectedModel,
+      });
+
+      setShapData(response.data);
+      console.log('SHAP explanation received:', response.data);
+    } catch (err) {
+      console.error('Error fetching SHAP explanation:', err);
+      setError(err.response?.data?.error || err.message || 'Failed to get SHAP explanation');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && transaction) {
+      fetchShapExplanation();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, transaction, selectedModel]);
 
   if (!isOpen) return null;
 

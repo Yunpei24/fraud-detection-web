@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, AlertTriangle, RefreshCw } from 'lucide-react';
+import { TrendingUp, RefreshCw } from 'lucide-react';
 import { driftAPI } from '../services/api';
 import DriftReportsTable from '../components/Drift/DriftReportsTable';
 import DriftStatsCards from '../components/Drift/DriftStatsCards';
