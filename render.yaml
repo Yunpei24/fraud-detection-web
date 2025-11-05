@@ -1,9 +1,11 @@
 services:
+  # Backend API Service
   - type: web
     name: fraud-detection-backend
     env: node
     region: oregon
     plan: free
+    rootDir: backend
     buildCommand: npm install
     startCommand: node server.js
     envVars:
@@ -26,3 +28,18 @@ services:
       - key: PORT
         value: 3001
     healthCheckPath: /health
+
+  # Frontend React Service (optional - can deploy to Vercel instead)
+  - type: web
+    name: fraud-detection-frontend
+    env: static
+    region: oregon
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    envVars:
+      - key: REACT_APP_API_URL
+        sync: false
+      - key: REACT_APP_WS_URL
+        sync: false
