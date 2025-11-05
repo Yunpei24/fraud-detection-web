@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react';
 import { formatPercentage } from '../../utils/helpers';
 
 const DriftStatsCards = ({ stats }) => {
