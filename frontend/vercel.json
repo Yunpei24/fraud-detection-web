@@ -18,9 +18,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "REACT_APP_API_URL": "@fraud_detection_api_url",
-    "REACT_APP_WS_URL": "@fraud_detection_ws_url"
-  }
+  ]
 }
