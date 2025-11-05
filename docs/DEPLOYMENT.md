@@ -67,7 +67,7 @@ fraud-detection-web/
 3. Connect your GitHub repository
 4. Configure the service:
    - **Name:** `fraud-detection-backend`
-   - **Root Directory:** `fraud-detection-web/backend`
+   - **Root Directory:** `/` (empty)
    - **Environment:** `Node`
    - **Region:** Choose closest to your database
    - **Branch:** `main` (or your branch)

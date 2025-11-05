@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Filter, Download } from 'lucide-react';
 import { transactionAPI } from '../services/api';
 import TransactionTable from '../components/Transactions/TransactionTable';
@@ -18,7 +18,7 @@ const Transactions = () => {
     offset: 0,
   });
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     setLoading(true);
     try {
       const response = await transactionAPI.search(filters);
@@ -27,11 +27,11 @@ const Transactions = () => {
       console.error('Error fetching transactions:', error);
     }
     setLoading(false);
-  };
+  }, [filters]);
 
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [fetchTransactions]);
 
   const handleSearch = () => {
     fetchTransactions();
