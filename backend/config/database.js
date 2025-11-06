@@ -6,6 +6,12 @@ const pool = new Pool({
   database: process.env.DB_NAME || 'fraud_detection',
   user: process.env.DB_USER || 'fraud_user',
   password: process.env.DB_PASSWORD,
+  
+  // ✅ Configuration SSL added for secure connections
+  ssl: process.env.DB_HOST !== 'localhost' ? {
+    rejectUnauthorized: false
+  } : false,
+  
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
