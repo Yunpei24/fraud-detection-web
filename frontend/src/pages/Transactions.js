@@ -12,7 +12,6 @@ const Transactions = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     transaction_id: '',
-    customer_id: '',
     is_fraud: '',
     limit: 100,
     offset: 0,
@@ -52,14 +51,14 @@ const Transactions = () => {
 
   const exportToCSV = () => {
     // Simple CSV export
-    const headers = ['Transaction ID', 'Customer ID', 'Amount', 'Fraud Score', 'Predicted Fraud', 'Time'];
+    const headers = ['Transaction ID', 'Amount', 'Fraud Score', 'Predicted Fraud', 'Time', 'Class'];
     const rows = transactions.map(t => [
       t.transaction_id,
-      t.customer_id,
       t.amount,
       t.fraud_score,
       t.is_fraud_predicted,
-      t.time
+      t.time,
+      t.class
     ]);
 
     const csvContent = [
@@ -101,7 +100,7 @@ const Transactions = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
-                placeholder="Search by Transaction ID or Customer ID..."
+                placeholder="Search by Transaction ID..."
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={filters.transaction_id}
                 onChange={(e) => handleFilterChange('transaction_id', e.target.value)}
