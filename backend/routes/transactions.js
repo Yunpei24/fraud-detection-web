@@ -11,8 +11,6 @@ router.get('/search', async (req, res) => {
   try {
     const { 
       transaction_id, 
-      customer_id, 
-      merchant_id,
       start_date, 
       end_date,
       is_fraud,
@@ -25,11 +23,12 @@ router.get('/search', async (req, res) => {
     let query = `
       SELECT 
         t.transaction_id,
-        t.customer_id,
-        t.merchant_id,
         t.amount,
         t.time,
-        t.created_at,
+        t.class,
+        t.source,
+        t.timestamp,
+        t.ingestion_timestamp,
         t.v1, t.v2, t.v3, t.v4, t.v5,
         p.fraud_score,
         p.is_fraud_predicted,
@@ -47,16 +46,6 @@ router.get('/search', async (req, res) => {
     if (transaction_id) {
       params.push(transaction_id);
       query += ` AND t.transaction_id = $${paramCount++}`;
-    }
-    
-    if (customer_id) {
-      params.push(customer_id);
-      query += ` AND t.customer_id = $${paramCount++}`;
-    }
-    
-    if (merchant_id) {
-      params.push(merchant_id);
-      query += ` AND t.merchant_id = $${paramCount++}`;
     }
     
     if (start_date && end_date) {

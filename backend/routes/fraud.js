@@ -13,11 +13,12 @@ router.get('/recent', async (req, res) => {
     const query = `
       SELECT 
         t.transaction_id,
-        t.customer_id,
-        t.merchant_id,
         t.amount,
         t.time,
-        t.created_at,
+        t.class,
+        t.source,
+        t.timestamp,
+        t.ingestion_timestamp,
         -- PCA Features (V1-V28) needed for SHAP explanations
         t.v1, t.v2, t.v3, t.v4, t.v5, t.v6, t.v7, t.v8, t.v9, t.v10,
         t.v11, t.v12, t.v13, t.v14, t.v15, t.v16, t.v17, t.v18, t.v19, t.v20,
@@ -72,7 +73,6 @@ router.get('/stats', async (req, res) => {
         AVG(p.fraud_score) as avg_fraud_score,
         MAX(p.fraud_score) as max_fraud_score,
         MIN(p.fraud_score) as min_fraud_score,
-        COUNT(DISTINCT t.customer_id) as unique_customers,
         SUM(t.amount) as total_amount,
         SUM(CASE WHEN p.is_fraud_predicted THEN t.amount ELSE 0 END) as fraud_amount
       FROM transactions t
@@ -96,7 +96,6 @@ router.get('/stats', async (req, res) => {
       avg_fraud_score: parseFloat(stats.avg_fraud_score || 0).toFixed(4),
       max_fraud_score: parseFloat(stats.max_fraud_score || 0).toFixed(4),
       min_fraud_score: parseFloat(stats.min_fraud_score || 0).toFixed(4),
-      unique_customers: parseInt(stats.unique_customers),
       total_amount: parseFloat(stats.total_amount || 0).toFixed(2),
       fraud_amount: parseFloat(stats.fraud_amount || 0).toFixed(2),
       fraud_amount_percentage: stats.total_amount > 0

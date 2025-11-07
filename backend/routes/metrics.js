@@ -10,12 +10,12 @@ router.get('/dashboard', async (req, res) => {
   try {
     const { period = '24h' } = req.query;
     
-    // Determine time condition
-    let timeCondition = "DATE(t.time) = CURRENT_DATE";
+    // Determine time condition (using timestamp column, not time which is DECIMAL)
+    let timeCondition = "DATE(t.timestamp) = CURRENT_DATE";
     if (period === '7d') {
-      timeCondition = "t.time >= NOW() - INTERVAL '7 days'";
+      timeCondition = "t.timestamp >= NOW() - INTERVAL '7 days'";
     } else if (period === '30d') {
-      timeCondition = "t.time >= NOW() - INTERVAL '30 days'";
+      timeCondition = "t.timestamp >= NOW() - INTERVAL '30 days'";
     }
     
     // Get transaction and fraud metrics
@@ -25,8 +25,6 @@ router.get('/dashboard', async (req, res) => {
         SUM(CASE WHEN p.is_fraud_predicted THEN 1 ELSE 0 END) as fraud_count,
         AVG(p.fraud_score) as avg_fraud_score,
         MAX(p.fraud_score) as max_fraud_score,
-        COUNT(DISTINCT t.customer_id) as unique_customers,
-        COUNT(DISTINCT t.merchant_id) as unique_merchants,
         SUM(t.amount) as total_amount,
         SUM(CASE WHEN p.is_fraud_predicted THEN t.amount ELSE 0 END) as fraud_amount,
         AVG(t.amount) as avg_transaction_amount
@@ -64,8 +62,6 @@ router.get('/dashboard', async (req, res) => {
       timestamp: new Date().toISOString(),
       transactions: {
         total: parseInt(metrics.total_transactions),
-        unique_customers: parseInt(metrics.unique_customers),
-        unique_merchants: parseInt(metrics.unique_merchants),
         total_amount: parseFloat(metrics.total_amount || 0).toFixed(2),
         avg_amount: parseFloat(metrics.avg_transaction_amount || 0).toFixed(2)
       },
@@ -102,14 +98,14 @@ router.get('/hourly', async (req, res) => {
     
     const query = `
       SELECT 
-        DATE_TRUNC('hour', t.time) as hour,
+        DATE_TRUNC('hour', t.timestamp) as hour,
         COUNT(*) as transaction_count,
         SUM(CASE WHEN p.is_fraud_predicted THEN 1 ELSE 0 END) as fraud_count,
         AVG(p.fraud_score) as avg_fraud_score,
         SUM(t.amount) as total_amount
       FROM transactions t
       LEFT JOIN predictions p ON t.transaction_id = p.transaction_id
-      WHERE t.time >= NOW() - INTERVAL '${hours} hours'
+      WHERE t.timestamp >= NOW() - INTERVAL '${hours} hours'
       GROUP BY hour
       ORDER BY hour ASC
     `;
