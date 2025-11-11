@@ -54,6 +54,34 @@ export const formatDateTime = (dateString) => {
 };
 
 /**
+ * Format Unix timestamp (seconds since epoch)
+ * Used for transaction.time field
+ */
+export const formatUnixTimestamp = (timestamp) => {
+  if (!timestamp || timestamp === 0) return 'N/A';
+  
+  try {
+    // Convert to milliseconds if it's in seconds
+    const ms = timestamp < 10000000000 ? timestamp * 1000 : timestamp;
+    const date = new Date(ms);
+    
+    if (isNaN(date.getTime())) return 'Invalid Date';
+    
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  } catch (error) {
+    console.error('Error formatting timestamp:', error);
+    return 'Invalid Date';
+  }
+};
+
+/**
  * Format time only
  */
 export const formatTime = (dateString) => {

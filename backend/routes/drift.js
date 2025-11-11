@@ -17,8 +17,7 @@ router.get('/reports', async (req, res) => {
         summary,
         severity,
         recommendations,
-        drift_type,
-        affected_features
+        alerts
       FROM drift_reports
     `;
     
@@ -56,13 +55,13 @@ router.get('/latest', async (req, res) => {
       SELECT 
         id,
         timestamp,
-        drift_type,
-        drift_detected,
-        drift_score,
-        feature_drifts,
+        analysis_window,
+        reference_window,
+        data_drift,
         target_drift,
-        drift_summary,
-        recommendations
+        concept_drift,
+        multivariate_drift,
+        drift_summary
       FROM drift_analysis_results
       ORDER BY timestamp DESC
       LIMIT 1
@@ -96,10 +95,10 @@ router.get('/history', async (req, res) => {
     const query = `
       SELECT 
         timestamp,
-        drift_detected,
-        drift_score,
-        drift_type,
-        feature_drifts
+        data_drift,
+        target_drift,
+        concept_drift,
+        drift_summary
       FROM drift_analysis_results
       WHERE timestamp >= NOW() - INTERVAL '${days} days'
       ORDER BY timestamp ASC
@@ -124,19 +123,39 @@ router.get('/history', async (req, res) => {
  */
 router.get('/stats', async (req, res) => {
   try {
-    const query = `
+    // Get count of total analyses
+    const countQuery = `
       SELECT 
         COUNT(*) as total_analyses,
-        SUM(CASE WHEN drift_detected THEN 1 ELSE 0 END) as drift_detected_count,
-        AVG(drift_score) as avg_drift_score,
-        MAX(drift_score) as max_drift_score,
         MAX(timestamp) as last_analysis
       FROM drift_analysis_results
       WHERE timestamp >= NOW() - INTERVAL '30 days'
     `;
     
-    const result = await pool.query(query);
-    const stats = result.rows[0];
+    const countResult = await pool.query(countQuery);
+    const stats = countResult.rows[0];
+    
+    // Get drift detection count from drift_summary
+    // drift_summary contains info about whether drift was detected
+    const driftQuery = `
+      SELECT 
+        COUNT(*) FILTER (WHERE (drift_summary->>'overall_drift_detected')::boolean = true) as drift_detected_count,
+        AVG(CASE 
+          WHEN drift_summary->>'severity_score' IS NOT NULL 
+          THEN (drift_summary->>'severity_score')::float 
+          ELSE 0 
+        END) as avg_drift_score,
+        MAX(CASE 
+          WHEN drift_summary->>'severity_score' IS NOT NULL 
+          THEN (drift_summary->>'severity_score')::float 
+          ELSE 0 
+        END) as max_drift_score
+      FROM drift_analysis_results
+      WHERE timestamp >= NOW() - INTERVAL '30 days'
+    `;
+    
+    const driftResult = await pool.query(driftQuery);
+    const driftStats = driftResult.rows[0];
     
     // Get severity distribution from reports
     const severityQuery = `
@@ -152,12 +171,12 @@ router.get('/stats', async (req, res) => {
     
     res.json({
       total_analyses: parseInt(stats.total_analyses),
-      drift_detected_count: parseInt(stats.drift_detected_count),
+      drift_detected_count: parseInt(driftStats.drift_detected_count || 0),
       drift_rate: stats.total_analyses > 0 
-        ? ((stats.drift_detected_count / stats.total_analyses) * 100).toFixed(2)
+        ? ((driftStats.drift_detected_count / stats.total_analyses) * 100).toFixed(2)
         : 0,
-      avg_drift_score: parseFloat(stats.avg_drift_score || 0).toFixed(4),
-      max_drift_score: parseFloat(stats.max_drift_score || 0).toFixed(4),
+      avg_drift_score: parseFloat(driftStats.avg_drift_score || 0).toFixed(4),
+      max_drift_score: parseFloat(driftStats.max_drift_score || 0).toFixed(4),
       last_analysis: stats.last_analysis,
       severity_distribution: severityResult.rows.reduce((acc, row) => {
         acc[row.severity.toLowerCase()] = parseInt(row.count);

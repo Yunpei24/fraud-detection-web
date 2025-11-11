@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { formatCurrency, formatDateTime, getFraudRiskLevel, getBadgeColor } from '../../utils/helpers';
+import { formatCurrency, formatDateTime, formatUnixTimestamp, getFraudRiskLevel, getBadgeColor } from '../../utils/helpers';
 
 const TransactionModal = ({ transaction, onClose }) => {
   if (!transaction) return null;
@@ -77,16 +77,20 @@ const TransactionModal = ({ transaction, onClose }) => {
                 </p>
               </div>
               <div>
-                <span className="text-sm text-gray-600">Time</span>
-                <p className="text-sm mt-1">{formatDateTime(transaction.time)}</p>
+                <span className="text-sm text-gray-600">Transaction Time</span>
+                <p className="text-sm mt-1">{formatUnixTimestamp(transaction.time)}</p>
               </div>
               <div>
-                <span className="text-sm text-gray-600">Customer ID</span>
-                <p className="text-sm font-mono mt-1">{transaction.customer_id || 'N/A'}</p>
+                <span className="text-sm text-gray-600">Actual Class</span>
+                <div className="mt-1">
+                  <span className={`badge ${transaction.class === 1 ? 'badge-high' : 'badge-safe'}`}>
+                    {transaction.class === 1 ? 'FRAUD' : 'LEGITIMATE'}
+                  </span>
+                </div>
               </div>
               <div>
-                <span className="text-sm text-gray-600">Merchant ID</span>
-                <p className="text-sm font-mono mt-1">{transaction.merchant_id || 'N/A'}</p>
+                <span className="text-sm text-gray-600">Transaction Source</span>
+                <p className="text-sm mt-1">{transaction.source || 'kafka'}</p>
               </div>
             </div>
           </div>

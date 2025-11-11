@@ -6,14 +6,14 @@ const FilterPanel = ({ filters, onFilterChange, onApply }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Customer ID
+            Transaction ID
           </label>
           <input
             type="text"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter customer ID"
-            value={filters.customer_id}
-            onChange={(e) => onFilterChange('customer_id', e.target.value)}
+            placeholder="Enter transaction ID"
+            value={filters.transaction_id || ''}
+            onChange={(e) => onFilterChange('transaction_id', e.target.value)}
           />
         </div>
 
