@@ -101,8 +101,7 @@ router.get('/:id', async (req, res) => {
         p.is_fraud_predicted,
         p.prediction_time,
         p.model_version,
-        p.feature_importance,
-        p.shap_values
+        p.feature_importance
       FROM transactions t
       LEFT JOIN predictions p ON t.transaction_id = p.transaction_id
       WHERE t.transaction_id = $1
