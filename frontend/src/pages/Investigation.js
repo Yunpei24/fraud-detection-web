@@ -41,6 +41,7 @@ const Investigation = () => {
 
   useEffect(() => {
     fetchPendingTransactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelectTransaction = async (transaction) => {
