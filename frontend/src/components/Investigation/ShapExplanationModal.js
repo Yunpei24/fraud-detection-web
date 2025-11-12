@@ -10,26 +10,38 @@ const ShapExplanationModal = ({ isOpen, onClose, transaction }) => {
 
   // Helper function to extract 30 features from transaction
   const extractFeatures = (transaction) => {
-    // If transaction already has features array, use it
-    if (Array.isArray(transaction.features) && transaction.features.length === 30) {
-      return transaction.features;
-    }
-
-    // Otherwise, construct from transaction fields
     // Format: [Time, V1-V28, Amount]
     const features = [];
     
-    // Time (index 0)
-    features.push(parseFloat(transaction.time || 0));
+    // Time (index 0) - Convert to float
+    const time = parseFloat(transaction.time);
+    if (isNaN(time)) {
+      console.warn('Invalid time value:', transaction.time);
+      features.push(0.0);
+    } else {
+      features.push(time);
+    }
     
     // V1-V28 (indices 1-28)
     for (let i = 1; i <= 28; i++) {
       const key = `v${i}`;
-      features.push(parseFloat(transaction[key] || 0));
+      const value = parseFloat(transaction[key]);
+      if (isNaN(value)) {
+        console.warn(`Invalid feature ${key}:`, transaction[key]);
+        features.push(0.0);
+      } else {
+        features.push(value);
+      }
     }
     
     // Amount (index 29)
-    features.push(parseFloat(transaction.amount || 0));
+    const amount = parseFloat(transaction.amount);
+    if (isNaN(amount)) {
+      console.warn('Invalid amount value:', transaction.amount);
+      features.push(0.0);
+    } else {
+      features.push(amount);
+    }
     
     return features;
   };
@@ -42,19 +54,42 @@ const ShapExplanationModal = ({ isOpen, onClose, transaction }) => {
       setLoading(true);
       setError(null);
 
-      // Extract features from transaction as array of 30 floats
-      // Format: [Time, V1, V2, ..., V28, Amount]
+      // Extract features from transaction
       const features = extractFeatures(transaction);
 
+      // Validate features
       if (!features || features.length !== 30) {
-        throw new Error('Transaction must have exactly 30 features');
+        throw new Error(`Invalid features: expected 30, got ${features?.length || 0}`);
       }
 
-      console.log('Requesting SHAP explanation for transaction:', transaction.transaction_id);
-      console.log('Using model:', selectedModel);
+      // Validate all features are valid numbers
+      const invalidFeatures = features.filter((f, i) => typeof f !== 'number' || isNaN(f));
+      if (invalidFeatures.length > 0) {
+        throw new Error(`Found ${invalidFeatures.length} invalid feature values`);
+      }
+
+      // Ensure transaction_id is a string
+      const transactionId = String(transaction.transaction_id || transaction.id || '');
+      
+      if (!transactionId) {
+        throw new Error('Missing transaction_id');
+      }
+
+      // console.log('=== SHAP Request Debug ===');
+      // console.log('Transaction ID:', transactionId, '| Type:', typeof transactionId);
+      // console.log('Features length:', features.length);
+      // console.log('Features sample (first 5):', features.slice(0, 5));
+      // console.log('Features sample (last 5):', features.slice(-5));
+      // console.log('Model type:', selectedModel);
+      // console.log('Request payload:', {
+      //   transaction_id: transactionId,
+      //   features: features,
+      //   model_type: selectedModel,
+      // });
+      // console.log('=========================');
 
       const response = await explainAPI.getShapExplanation({
-        transaction_id: transaction.transaction_id,
+        transaction_id: transactionId,
         features: features,
         model_type: selectedModel,
       });
@@ -63,7 +98,7 @@ const ShapExplanationModal = ({ isOpen, onClose, transaction }) => {
       console.log('SHAP explanation received:', response.data);
     } catch (err) {
       console.error('Error fetching SHAP explanation:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to get SHAP explanation');
+      setError(err.response?.data?.detail?.message || err.response?.data?.error || err.message || 'Failed to get SHAP explanation');
     } finally {
       setLoading(false);
     }

@@ -34,8 +34,11 @@ router.use(verifyToken);
 router.post('/shap', async (req, res) => {
   try {
     console.log('[EXPLAIN] Requesting SHAP explanation');
-    console.log(`[EXPLAIN] Transaction ID: ${req.body.transaction_id}`);
-    console.log(`[EXPLAIN] FastAPI URL: ${FASTAPI_URL}/api/v1/explain/shap`);
+    // console.log('[EXPLAIN] Request body:', JSON.stringify(req.body, null, 2));
+    // console.log('[EXPLAIN] Transaction ID:', req.body.transaction_id, 'Type:', typeof req.body.transaction_id);
+    // console.log('[EXPLAIN] Features length:', req.body.features?.length);
+    // console.log('[EXPLAIN] Model type:', req.body.model_type);
+    // console.log(`[EXPLAIN] FastAPI URL: ${FASTAPI_URL}/api/v1/explain/shap`);
 
     // Forward request to FastAPI
     const response = await axios.post(

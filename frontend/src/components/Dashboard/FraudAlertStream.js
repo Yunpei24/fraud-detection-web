@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { 
   formatCurrency, 
   formatDateTime, 
@@ -9,6 +10,14 @@ import {
 } from '../../utils/helpers';
 
 const FraudAlertStream = ({ frauds }) => {
+  const navigate = useNavigate();
+
+  const handleInvestigate = (fraud) => {
+    // Navigate to Investigation page with transaction pre-selected
+    navigate('/investigation', {
+      state: { selectedTransactionId: fraud.transaction_id }
+    });
+  };
   if (!frauds || frauds.length === 0) {
     return (
       <div className="card">
@@ -94,7 +103,10 @@ const FraudAlertStream = ({ frauds }) => {
                   )}
                 </div>
 
-                <button className="ml-4 px-3 py-1 bg-white border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                <button 
+                  onClick={() => handleInvestigate(fraud)}
+                  className="ml-4 px-3 py-1 bg-blue-600 text-white border border-blue-700 rounded-lg text-sm hover:bg-blue-700 transition-colors font-medium"
+                >
                   Investigate
                 </button>
               </div>

@@ -144,13 +144,8 @@ export const modelsAPI = {
 // Explain API (SHAP explanations and feature importance)
 export const explainAPI = {
   // Get SHAP explanation for a transaction
-  getShapExplanation: (transactionId, features, modelType = 'ensemble', metadata = {}) =>
-    api.post('/api/explain/shap', {
-      transaction_id: transactionId,
-      features,
-      model_type: modelType,
-      metadata,
-    }),
+  getShapExplanation: (data) =>
+    api.post('/api/explain/shap', data),
   
   // Get global feature importance for a model
   getFeatureImportance: (modelType) =>

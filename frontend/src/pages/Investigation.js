@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, CheckCircle, XCircle } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { fraudAPI, transactionAPI } from '../services/api';
 import PendingReviewList from '../components/Investigation/PendingReviewList';
 import FeedbackForm from '../components/Investigation/FeedbackForm';
 import ShapExplanationModal from '../components/Investigation/ShapExplanationModal';
 
 const Investigation = () => {
+  const location = useLocation();
   const [pendingTransactions, setPendingTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,6 +23,16 @@ const Investigation = () => {
         f => f.fraud_score >= 0.7
       );
       setPendingTransactions(highRisk);
+      
+      // Auto-select transaction from navigation state
+      if (location.state?.selectedTransactionId && highRisk.length > 0) {
+        const preSelectedTransaction = highRisk.find(
+          t => t.transaction_id === location.state.selectedTransactionId
+        );
+        if (preSelectedTransaction) {
+          handleSelectTransaction(preSelectedTransaction);
+        }
+      }
     } catch (error) {
       console.error('Error fetching pending transactions:', error);
     }
